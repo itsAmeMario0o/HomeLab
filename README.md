@@ -33,7 +33,7 @@
                                 |         SERVER           |
                                 | Mgmt IP: 192.168.86.221  |
                                 | MAC: d8:9d:67:f3:4a:67   |
-                                | SSH: eve / root          |
+                                | SSH: root / eve          |
                                 | Web UI: admin / eve      |
                                 +--------------------------+
 ```
@@ -45,7 +45,7 @@
 | Device      | IP Address        | MAC Address            | Credentials             |
 |-------------|-------------------|-------------------------|--------------------------|
 | L2 Switch   | 192.168.86.199    | 94:18:65:6F:C2:50       | Password: `!Cre8vpw`     |
-| Server      | 192.168.86.221    | d8:9d:67:f3:4a:67       | SSH: `eve/root`<br>Web UI: `admin/eve` |
+| Server      | 192.168.86.221    | d8:9d:67:f3:4a:67       | SSH: `root/eve`<br>Web UI: `admin/eve` |
 
 ---
 
@@ -58,7 +58,7 @@
 
 - **SSH into Server**: For administrative tasks, connect using:
   ```bash
-  ssh eve@192.168.86.221
+  ssh root@192.168.86.221
   ```
 
 - **Access the Web UI**: Open **Firefox** and go to:
