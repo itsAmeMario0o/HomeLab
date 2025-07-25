@@ -6,6 +6,8 @@ ping 8.8.8.8
 sudo su
 echo "nameserver 8.8.8.8" > /etc/resolv.conf
 
+ping google.com
+
 tce-load -wi curl
 tce-load -wi nano
 tce-load -wi htop
