@@ -3,6 +3,9 @@ sudo route add default gw 192.168.1.1
 
 ping 8.8.8.8
 
+sudo su
+echo "nameserver 8.8.8.8" > /etc/resolv.conf
+
 tce-load -wi curl
 tce-load -wi nano
 tce-load -wi htop
@@ -12,3 +15,9 @@ curl google.com
 htop
 
 filetool.sh -b
+
+---
+
+On Web
+echo '<html><body><h1>Hello from Web Tier</h1><p>Calling API...</p><script>fetch("http://<app-vm-ip>:5000").then(r => r.text()).then(alert);</script></body></html>' | sudo tee /var/www/html/index.html
+
