@@ -1,25 +1,127 @@
+1 -  Configure Interface
 sudo ifconfig eth0 192.168.1.100 netmask 255.255.255.0 up
 sudo route add default gw 192.168.1.1
 
+2 - Verify
 ping 8.8.8.8
 
-sudo su
-echo "nameserver 8.8.8.8" > /etc/resolv.conf
+3 - Configure Name Resolution
+sudo echo "nameserver 8.8.8.8" > /etc/resolv.conf
 
+4 - Verify
 ping google.com
 
-tce-load -wi curl
+5 - load tools
 tce-load -wi nano
 tce-load -wi htop
-tce-load -wi lighttpd
+tce-load -wi dropbear
+tce-load -wi busybox-httpd
+tce-load -wi git
 
+
+6 - Verify
 curl google.com
-htop
 
 filetool.sh -b
 
 ---
 
-On Web
-echo '<html><body><h1>Hello from Web Tier</h1><p>Calling API...</p><script>fetch("http://<app-vm-ip>:5000").then(r => r.text()).then(alert);</script></body></html>' | sudo tee /var/www/html/index.html
+7 - Enable SSH
+sudo mkdir -p /etc/dropbear
+
+# Generate RSA key
+sudo dropbearkey -t rsa -f /etc/dropbear/dropbear_rsa_host_key
+
+# (Optional) Generate DSS key
+sudo dropbearkey -t dss -f /etc/dropbear/dropbear_dss_host_key
+
+# (Optional) Generate ECDSA key
+sudo dropbearkey -t ecdsa -f /etc/dropbear/dropbear_ecdsa_host_key
+
+sudo dropbear -F -E
+
+8 - SSH to host
+
+ssh gns3@192.168.110.100
+
+9 - Make Web dir & index.html
+cd /var
+mkdir www
+cd www
+nano index.html 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Random Joke</title>
+  <style>
+    body {
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f9f9f9;
+  color: #333;
+  text-align: center; /* Ensures all text in body is centered */
+}
+
+.container {
+  padding: 2em;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  max-width: 600px;
+  width: 90%;
+}
+
+h1 {
+  font-size: 2em;
+  margin-bottom: 1em;
+  text-align: center;
+}
+
+p {
+  font-size: 1.2em;
+  margin: 0.5em 0;
+}
+
+#punchline {
+  font-weight: bold;
+  color: #007acc;
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Random Joke</h1>
+    <p id="setup">Loading...</p>
+    <p id="punchline"></p>
+  </div>
+
+  <script>
+    fetch('https://official-joke-api.appspot.com/random_joke')
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('setup').textContent = data.setup;
+        document.getElementById('punchline').textContent = data.punchline;
+      })
+      .catch(error => {
+        document.getElementById('setup').textContent = 'Failed to fetch joke.';
+        console.error('Error:', error);
+      });
+  </script>
+</body>
+</html>
+
+
+Optional - find the httpd
+sudo find / -name httpd
+
+10 - Launch Server
+sudo /usr/local/httpd/sbin/httpd -f -h /var/www
 
