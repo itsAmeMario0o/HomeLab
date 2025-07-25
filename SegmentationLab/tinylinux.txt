@@ -5,7 +5,9 @@ ping 8.8.8.8
 
 tce-load -wi curl
 tce-load -wi nano
+tce-load -wi htop
 
 curl google.com
+htop
 
 filetool.sh -b
