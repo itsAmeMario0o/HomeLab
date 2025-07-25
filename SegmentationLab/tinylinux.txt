@@ -125,3 +125,9 @@ sudo find / -name httpd
 10 - Launch Server
 sudo /usr/local/httpd/sbin/httpd -f -h /var/www
 
+
+---
+
+for Centos:
+sudo dhclient ens3
+ip addr show
