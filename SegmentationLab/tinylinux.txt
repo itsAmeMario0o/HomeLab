@@ -6,6 +6,7 @@ ping 8.8.8.8
 tce-load -wi curl
 tce-load -wi nano
 tce-load -wi htop
+tce-load -wi lighttpd
 
 curl google.com
 htop
