@@ -1,0 +1,67 @@
+# --- Step 1: Initialize the Kubernetes Control Plane ---
+# Replace `<CONTROL_PLANE_IP_ADDRESS>` with the static IP of your control plane node.
+# The `--pod-network-cidr` is crucial for the CNI to allocate IPs to pods.
+# We will use 10.244.0.0/16 which is a common default for many CNIs.
+echo "Initializing the Kubernetes control plane..."
+sudo kubeadm init --apiserver-advertise-address=<CONTROL_PLANE_IP_ADDRESS> --pod-network-cidr=10.244.0.0/16
+
+# --- Step 2: Configure kubectl for the Current User ---
+# This allows you to interact with the cluster without using `sudo`.
+echo "Configuring kubectl for the current user..."
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+# --- Step 3: Save the Worker Node Join Command ---
+# The `kubeadm init` command will output a `kubeadm join` command.
+# It is critical that you copy and save this command, as you will need it
+# to join your worker nodes to the cluster.
+
+# --- Step 4: Install Cilium CNI with Helm ---
+# Cilium is a powerful CNI. We'll install it using Helm.
+# This assumes you have already installed Helm. If not, you'll need to do that first.
+echo "Installing Cilium CNI with BGP configuration..."
+
+# Add the Cilium Helm repository
+helm repo add cilium https://helm.cilium.io/
+
+# Update Helm repositories
+helm repo update
+
+# Create a values.yaml file for Cilium with BGP DSR configuration
+# You MUST replace the placeholder values below with your specific network information.
+# <PEER_IP>: The IP address of your NXOS switch's VLAN 52 interface.
+# <PEER_ASN>: The BGP ASN of your NXOS switch.
+# <LOCAL_ASN>: The BGP ASN for your Kubernetes cluster.
+cat <<EOF > cilium-values.yaml
+bgp:
+  enabled: true
+  announce:
+    routes: true
+    podCIDRs: true
+  bgp-system-pod-annotations:
+    enabled: true
+  loadBalancerIP:
+    enabled: true
+  log:
+    level: "info"
+  bgp-virtual-router-mode:
+    enabled: true
+  bgp-virtual-router-mode-interface:
+    - "ens3" # Replace with your interface name if different
+  dsr: true
+  local-asn: <LOCAL_ASN>
+  peers:
+    - peer-address: <PEER_IP>
+      peer-asn: <PEER_ASN>
+      router-id: <CONTROL_PLANE_IP_ADDRESS>
+  virtual-routers:
+    - virtualRouterIP: "192.168.52.1" # The default gateway IP of your VLAN 52
+      local-asn: <LOCAL_ASN>
+      peers:
+        - peer-address: <PEER_IP>
+          peer-asn: <PEER_ASN>
+EOF
+
+# Install Cilium using the values file
+helm install cilium cilium/cilium --version 1.15.5 --namespace kube-system -f cilium-values.yaml
