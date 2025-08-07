@@ -46,7 +46,9 @@ helm repo update
 sudo curl -o cilium-values.yaml https://github.com/itsAmeMario0o/HomeLab/blob/main/cilium-value.yaml
 
 # Install Cilium using the values file
-helm install cilium cilium/cilium --version 1.15.5 --namespace kube-system -f cilium-values.yaml
+helm install cilium cilium/cilium --version 1.15.5 --namespace kube-system -f cilium-values.yaml --kubeconfig $HOME/.kube/config --set bgpControlPlane.enabled="true"
 
 # Download the BGP Config
 sudo curl -o BGPPeeringPolicy.yaml https://raw.githubusercontent.com/itsAmeMario0o/HomeLab/refs/heads/main/BGPPeeringPolicy.yaml
+
+kubectl apply -f BGPPeeringPolicy.yaml
