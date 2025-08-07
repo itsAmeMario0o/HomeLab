@@ -1,0 +1,9 @@
+bgpControlPlane:
+  enabled: true
+log:
+  level: "info"
+loadBalancerIP:
+  enabled: true
+bgp-system-pod-annotations:
+  enabled: true
+dsr: true
