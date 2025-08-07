@@ -43,22 +43,10 @@ helm repo add cilium https://helm.cilium.io/
 # Update Helm repositories
 helm repo update
 
-
-# You MUST replace the placeholder values below with your specific network information.
-# <PEER_IP>: The IP address of your NXOS switch's VLAN 52 interface.
-# <PEER_ASN>: The BGP ASN of your NXOS switch.
-# <LOCAL_ASN>: The BGP ASN for your Kubernetes cluster.
-
-sudo tee cilium-values.yaml > /dev/null <<EOF
-bgpControlPlane:
-  enabled: true
-log:
-  level: "info"
-loadBalancerIP:
-  enabled: true
-bgp-system-pod-annotations:
-  enabled: true
-dsr: true
+sudo curl -o cilium-values.yaml https://github.com/itsAmeMario0o/HomeLab/blob/main/cilium-value.yaml
 
 # Install Cilium using the values file
 helm install cilium cilium/cilium --version 1.15.5 --namespace kube-system -f cilium-values.yaml
+
+# Download the BGP Config
+sudo curl -o BGPPeeringPolicy.yaml https://raw.githubusercontent.com/itsAmeMario0o/HomeLab/refs/heads/main/BGPPeeringPolicy.yaml
