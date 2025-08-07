@@ -51,4 +51,6 @@ helm install cilium cilium/cilium --version 1.15.5 --namespace kube-system -f ci
 # Download the BGP Config
 sudo curl -o BGPPeeringPolicy.yaml https://raw.githubusercontent.com/itsAmeMario0o/HomeLab/refs/heads/main/BGPPeeringPolicy.yaml
 
+sudo curl -o BGPPPol.yaml https://raw.githubusercontent.com/itsAmeMario0o/HomeLab/refs/heads/main/BGPPPol.yaml
+
 kubectl apply -f BGPPeeringPolicy.yaml
