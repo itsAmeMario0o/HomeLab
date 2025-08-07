@@ -1,0 +1,25 @@
+! Enable the BGP feature on the switch
+configure terminal
+feature bgp
+
+! Create a route-map that permits all routes
+route-map PERMIT_ALL permit 10
+
+! Configure the BGP process
+router bgp 64512
+  router-id 192.168.52.1
+  
+! Configure the neighbor (Kubernetes Control Plane)
+  neighbor 192.168.52.100 remote-as 64513
+  
+! Address family configuration for IPv4
+     address-family ipv4 unicast
+! Enable the neighbor to send and receive routes for this address family
+    neighbor 192.168.52.100 activate
+    
+! Redistribute connected routes with the new route-map
+    redistribute direct route-map PERMIT_ALL
+
+! To verify the BGP configuration:
+    show running-config bgp
+    show ip bgp summ

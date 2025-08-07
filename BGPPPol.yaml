@@ -1,18 +1,11 @@
 apiVersion: cilium.io/v2
-kind: CiliumBGPClusterConfig
+kind: CiliumBGPPeeringPolicy
 metadata:
-  name: cilium-bgp
+  name: rack-0-config
 spec:
   nodeSelector:
     matchLabels:
       rack: rack0
-  bgpInstances:
-  - name: "instance-64513"
-    localASN: 64513
-    localPort: 179
-    peers:
-    - name: "peer-64512-tor1"
-      peerASN: 64512
-      peerAddress: 192.168.52.1/32
-      peerConfigRef:
-        name: "cilium-peer"
+  virtualRouters:
+  - neighbors:
+    - peerAddress: 192.168.52.1

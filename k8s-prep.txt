@@ -1,5 +1,7 @@
 # --- Kubernetes --- #
 
+# --- Set Hostname - Needed for K8s node label ---
+hostnamectl
 
 # --- Step 1: Update and Upgrade APT ---
 echo "Updating and upgrading apt packages..."
