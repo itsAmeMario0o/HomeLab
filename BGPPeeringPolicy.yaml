@@ -7,7 +7,7 @@ spec:
     matchLabels:
       rack: rack0
   bgpInstances:
-  - name: "instance-65000"
+  - name: "instance-64513"
     localASN: 64513
     localPort: 179
     peers:
