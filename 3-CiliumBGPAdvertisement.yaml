@@ -1,0 +1,11 @@
+apiVersion: cilium.io/v2
+kind: CiliumBGPAdvertisement
+metadata:
+  labels:
+    advertise: pod-svc
+spec:
+  advertisements:
+    - advertismentType: "PodCIDR"
+      attributes:
+        communities:
+          standard: ["64512:99"]

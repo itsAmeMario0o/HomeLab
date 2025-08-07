@@ -45,6 +45,10 @@ helm repo update
 
 sudo curl -o cilium-values.yaml https://github.com/itsAmeMario0o/HomeLab/blob/main/cilium-value.yaml
 
+# --- YOU NEED 3 files to configure BGP - Cluster config, Peer config, Advertisement
+
+
+
 # Install Cilium using the values file
 helm install cilium cilium/cilium --version 1.15.5 --namespace kube-system -f cilium-values.yaml --kubeconfig $HOME/.kube/config --set bgpControlPlane.enabled="true"
 
@@ -54,3 +58,9 @@ sudo curl -o BGPPeeringPolicy.yaml https://raw.githubusercontent.com/itsAmeMario
 sudo curl -o BGPPPol.yaml https://raw.githubusercontent.com/itsAmeMario0o/HomeLab/refs/heads/main/BGPPPol.yaml
 
 kubectl apply -f BGPPeeringPolicy.yaml
+
+# Check labels for NodeSelector
+kubectl get nodes --show-labels
+
+# Define label - rack
+kubectl label node ubuntu rack=rack0 --overwrite
