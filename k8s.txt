@@ -45,17 +45,18 @@ helm repo update
 
 sudo curl -o cilium-values.yaml https://github.com/itsAmeMario0o/HomeLab/blob/main/cilium-value.yaml
 
-# --- YOU NEED 3 files to configure BGP - Cluster config, Peer config, Advertisement
+# --- YOU NEED 3 files to configure BGP CRDs - Cluster config, Peer config, Advertisement
 
-
+See CiliumBGP 1,2,3
 
 # Install Cilium using the values file
 helm install cilium cilium/cilium --version 1.15.5 --namespace kube-system -f cilium-values.yaml --kubeconfig $HOME/.kube/config --set bgpControlPlane.enabled="true"
 
+# Upgrade BGP Config
+sudo helm upgrade cilium cilium/cilium --namespace kube-system --reuse-values --set bgpControlPlane.enabled=true --set cilium.installCRDs=true --kubeconfig $HOME/.kube/config
+
 # Download the BGP Config
 sudo curl -o BGPPeeringPolicy.yaml https://raw.githubusercontent.com/itsAmeMario0o/HomeLab/refs/heads/main/BGPPeeringPolicy.yaml
-
-sudo curl -o BGPPPol.yaml https://raw.githubusercontent.com/itsAmeMario0o/HomeLab/refs/heads/main/BGPPPol.yaml
 
 kubectl apply -f BGPPeeringPolicy.yaml
 

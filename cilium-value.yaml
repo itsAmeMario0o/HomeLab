@@ -1,9 +1,25 @@
+# -- Configure BGP
+bgp:
+  # -- Enable BGP support inside Cilium; embeds a new ConfigMap for BGP inside
+  # cilium-agent and cilium-operator
+  enabled: true
+  announce:
+    # -- Enable allocation and announcement of service LoadBalancer IPs
+    loadbalancerIP: true
+    # -- Enable announcement of node pod CIDR
+    podCIDR: true
+
+# -- This feature set enables virtual BGP routers to be created via
+# CiliumBGPPeeringPolicy CRDs.
 bgpControlPlane:
+  # -- Enables the BGP control plane.
   enabled: true
-log:
-  level: "info"
-loadBalancerIP:
-  enabled: true
-bgp-system-pod-annotations:
-  enabled: true
-dsr: true
+
+# Enables Hubble
+# -- Enable Hubble Relay (requires hubble.enabled=true)
+hubble:  
+  relay:
+    enabled: "true"
+# -- Whether to enable the Hubble UI.
+  ui:
+    enabled: "true"
