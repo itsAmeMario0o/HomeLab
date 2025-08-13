@@ -1,23 +1,54 @@
-# -- Configure BGP
-bgp:
-  # -- Enable BGP support inside Cilium; embeds a new ConfigMap for BGP inside
-  # cilium-agent and cilium-operator
+# -- Configure Cilium 
+# -- https://github.com/cilium/cilium/blob/v1.18/install/kubernetes/cilium/values.yaml
+
+ipam:
+  # -- Configure IP Address Management mode.
+  # ref: https://docs.cilium.io/en/stable/network/concepts/ipam/
+  mode: "cluster-pool"
+  # -- IPv4 CIDR list range to delegate to individual nodes for IPAM.
+  clusterPoolIPv4PodCIDRList: ["10.244.0.0/16"]
+  # -- IPv4 CIDR mask size to delegate to individual nodes for IPAM.
+  clusterPoolIPv4MaskSize: 24
+
+# -- Enable native-routing mode or tunneling mode.
+# Possible values:
+#   - ""
+#   - native
+#   - tunnel
+# @default -- `"tunnel"`
+routingMode: "native"
+
+# -- Enable installation of PodCIDR routes between worker
+# nodes if worker nodes share a common L2 network segment.
+autoDirectNodeRoutes: true
+
+# When specified, Cilium assumes networking for this CIDR is preconfigured and
+# hands traffic destined for that range to the Linux network stack without
+# applying any SNAT.
+# Generally speaking, specifying a native routing CIDR implies that Cilium can
+# depend on the underlying networking stack to route packets to their
+# destination. To offer a concrete example, if Cilium is configured to use
+# direct routing and the Kubernetes CIDR is included in the native routing CIDR,
+# the user must configure the routes to reach pods, either manually or by
+# setting the auto-direct-node-routes flag.
+ipv4NativeRoutingCIDR: "192.168.52.0/24"
+
+operator:
+  # -- Enable the cilium-operator component (required).
   enabled: true
-  announce:
-    # -- Enable allocation and announcement of service LoadBalancer IPs
-    loadbalancerIP: true
-    # -- Enable announcement of node pod CIDR
-    podCIDR: true
+  # -- Number of replicas to run for the cilium-operator deployment
+  replicas: 1
 
 # -- This feature set enables virtual BGP routers to be created via
 # CiliumBGPPeeringPolicy CRDs.
 bgpControlPlane:
   # -- Enables the BGP control plane.
   enabled: true
-
+  
 # Enables Hubble
 # -- Enable Hubble Relay (requires hubble.enabled=true)
-hubble:  
+hubble:
+  enabled: true  
   relay:
     enabled: true
 # -- Whether to enable the Hubble UI.

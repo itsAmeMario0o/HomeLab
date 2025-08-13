@@ -1,10 +1,40 @@
+# --- Step 0: Initialize Networking ---
+
+sudo nano /etc/netplan/00-installer-config.yaml
+network:
+  version: 2
+  ethernets:
+    ens3:
+      dhcp4: no
+      addresses: [192.168.52.100/24]
+      routes:
+        - to: default
+          via: 192.168.52.1
+      nameservers:
+        addresses: [8.8.8.8, 8.8.4.4]
+
+Ctrl+O
+Enter
+Control+X
+Enter
+
+sudo netplan apply
+
+ping 192.68.52.1
+ping 8.8.8.8
+ping google.com
+
+resolvectl status
+
+CHECK SWAPOFF! 
+
 # --- Step 1: Initialize the Kubernetes Control Plane ---
 # Replace `<CONTROL_PLANE_IP_ADDRESS>` with the static IP of your control plane node.
 # The `--pod-network-cidr` is crucial for the CNI to allocate IPs to pods.
 # We will use 10.244.0.0/16 which is a common default for many CNIs.
 echo "Initializing the Kubernetes control plane..."
 
-sudo kubeadm init --apiserver-advertise-address=192.168.52.100 --pod-network-cidr=10.244.0.0/16
+sudo kubeadm init --kubernetes-version 1.30.3 --apiserver-advertise-address=192.168.52.100 --pod-network-cidr=10.244.0.0/16
 
 # --- Step 2: Configure kubectl for the Current User ---
 # This allows you to interact with the cluster without using `sudo`.
@@ -19,7 +49,7 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 # It is critical that you copy and save this command, as you will need it
 # to join your worker nodes to the cluster.
 
-kubeadm join 192.168.52.100:6443 --token yhmlze.fxc7dw3nscxtzxxl --discovery-token-ca-cert-hash sha256:2cd7f21ace810ba662213e469ee9143107509994f5f21ab29154c9c64b3b9f8a
+kubeadm join 192.168.52.100:6443 --token i5k50w.szd5dlcw7cx2tpyu --discovery-token-ca-cert-hash sha256:b48bb2385b2d9c4041f617fefd74c5d02206e48a635881cd86d347f0e55e596d
 
 # --- Step 1: Download the Helm installation script ---
 # This command downloads the latest Helm release.

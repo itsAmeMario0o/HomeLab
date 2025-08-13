@@ -8,4 +8,4 @@ spec:
     - advertismentType: "PodCIDR"
       attributes:
         communities:
-          standard: ["64512:99"]
+          standard: ["65002:99"]
