@@ -1,5 +1,6 @@
 # -- Configure Cilium 
 # -- https://github.com/cilium/cilium/blob/v1.15/install/kubernetes/cilium/values.yaml
+
 ipam:
   # -- Configure IP Address Management mode.
   # ref: https://docs.cilium.io/en/stable/network/concepts/ipam/
@@ -9,6 +10,7 @@ ipam:
     clusterPoolIPv4PodCIDRList: ["10.244.0.0/16"]
     # -- IPv4 CIDR mask size to delegate to individual nodes for IPAM.
     clusterPoolIPv4MaskSize: 24
+
 # -- Enable native-routing mode or tunneling mode.
 # Possible values:
 #   - ""
@@ -16,9 +18,11 @@ ipam:
 #   - tunnel
 # @default -- `"tunnel"`
 routingMode: "native"
+
 # -- Enable installation of PodCIDR routes between worker
 # nodes if worker nodes share a common L2 network segment.
 autoDirectNodeRoutes: true
+
 # When specified, Cilium assumes networking for this CIDR is preconfigured and
 # hands traffic destined for that range to the Linux network stack without
 # applying any SNAT.
@@ -29,11 +33,15 @@ autoDirectNodeRoutes: true
 # the user must configure the routes to reach pods, either manually or by
 # setting the auto-direct-node-routes flag.
 ipv4NativeRoutingCIDR: ""
+
+#kubeProxyReplacement: "false"
+
 # -- Configure BGP
 bgp:
   # -- Enable BGP support inside Cilium; embeds a new ConfigMap for BGP inside
   # cilium-agent and cilium-operator
   enabled: true
+
 # -- This feature set enables virtual BGP routers to be created via
 # CiliumBGPPeeringPolicy CRDs.
 bgpControlPlane:
@@ -45,6 +53,7 @@ bgpControlPlane:
     create: false
     # -- The name of the secret namespace to which Cilium agents are given read access
     name: kube-system
+    
 hubble:
   # -- Enable Hubble (true by default).
   enabled: true
