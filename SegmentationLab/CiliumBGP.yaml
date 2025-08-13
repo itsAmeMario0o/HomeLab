@@ -1,0 +1,40 @@
+apiVersion: cilium.io/v2
+kind: CiliumBGPClusterConfig
+metadata:
+  name: cilium-bgp
+  bgpInstances:
+  - name: "instance-65002"
+    localASN: 65002
+    peers:
+    - name: "tor-switch"
+      peerASN: 65002
+      peerAddress: 192.168.52.1
+      peerRefConfig:
+        name: "cilium-peer"
+
+apiVersion: cilium.io/v2
+kind: CiliumBGPPeerConfig
+metadata:
+  name: cilium-peer
+spec:
+  gracefulRestart:
+    enabled: true
+    restartTimeSeconds: 15
+families:
+  - afi: ipv4
+    safi: unicast
+    advertisments:
+      matchLabels:
+        advertise: "pod-svc"
+
+apiVersion: cilium.io/v2
+kind: CiliumBGPAdvertisement
+metadata:
+  labels:
+    advertise: pod-svc
+spec:
+  advertisements:
+    - advertismentType: "PodCIDR"
+      attributes:
+        communities:
+          standard: ["65002:99"]
